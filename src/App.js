@@ -1,24 +1,42 @@
-import logo from './logo.svg';
+import { useEffect, useState } from 'react';
 import './App.css';
+import Buttons from './Buttons';
+import List from './List';
 
 function App() {
+
+  const [items, setItems] = useState([]);
+  const [dataState, setDataState] = useState('posts');
+  const API_URL = "https://jsonplaceholder.typicode.com/";
+
+  useEffect(() => {
+    const fetchData = async () => {
+      
+      try{
+        const response = await fetch(`${API_URL}${dataState}`);
+        const listItems = await response.json();
+        setItems(listItems);
+        // console.log(listItems);
+
+      }catch (error){
+        console.log(error.stack);
+      }
+    }
+
+    fetchData();
+
+  }, [dataState]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Buttons dataState={dataState} setDataState={setDataState}/>
+      {/* hello wolrd! {JSON.stringify(items).map} */}
+
+      <ul>
+        {items.map(item => (<List key={item.id} item={item}/>))}
+
+      </ul>
+    </>
   );
 }
 
